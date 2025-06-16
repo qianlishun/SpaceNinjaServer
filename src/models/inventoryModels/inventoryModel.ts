@@ -251,12 +251,6 @@ const ArchonCrystalUpgradeSchema = new Schema<IArchonCrystalUpgrade>(
     { _id: false }
 );
 
-ArchonCrystalUpgradeSchema.set("toJSON", {
-    transform(_document, returnedObject) {
-        delete returnedObject.__v;
-    }
-});
-
 const boosterSchema = new Schema<IBooster>(
     {
         ExpiryDate: Number,
