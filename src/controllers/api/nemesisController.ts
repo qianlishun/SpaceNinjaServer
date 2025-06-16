@@ -134,23 +134,14 @@ export const nemesisController: RequestHandler = async (req, res) => {
                 for (const upgrade of body.knife!.AttachedUpgrades) {
                     switch (upgrade.ItemType) {
                         case "/Lotus/Upgrades/Mods/DataSpike/Potency/GainAntivirusAndSpeedOnUseMod":
-                            antivirusGain += 10;
-                            consumeModCharge(response, inventory, upgrade, dataknifeUpgrades);
-                            break;
                         case "/Lotus/Upgrades/Mods/DataSpike/Potency/GainAntivirusAndWeaponDamageOnUseMod":
+                        case "/Lotus/Upgrades/Mods/DataSpike/Potency/GainAntivirusSmallOnSingleUseMod":
                             antivirusGain += 10;
                             consumeModCharge(response, inventory, upgrade, dataknifeUpgrades);
                             break;
                         case "/Lotus/Upgrades/Mods/DataSpike/Potency/GainAntivirusLargeOnSingleUseMod": // Instant Secure
-                            antivirusGain += 15;
-                            consumeModCharge(response, inventory, upgrade, dataknifeUpgrades);
-                            break;
                         case "/Lotus/Upgrades/Mods/DataSpike/Potency/GainAntivirusOnUseMod": // Immuno Shield
                             antivirusGain += 15;
-                            consumeModCharge(response, inventory, upgrade, dataknifeUpgrades);
-                            break;
-                        case "/Lotus/Upgrades/Mods/DataSpike/Potency/GainAntivirusSmallOnSingleUseMod":
-                            antivirusGain += 10;
                             consumeModCharge(response, inventory, upgrade, dataknifeUpgrades);
                             break;
                     }
