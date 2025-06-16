@@ -1,5 +1,6 @@
 import { version_compare } from "@/src/helpers/inventoryHelpers";
 import {
+    antivirusMods,
     consumeModCharge,
     decodeNemesisGuess,
     encodeNemesisGuess,
@@ -147,12 +148,24 @@ export const nemesisController: RequestHandler = async (req, res) => {
                     }
                 }
                 inventory.Nemesis!.HenchmenKilled += antivirusGain;
+                if (inventory.Nemesis!.HenchmenKilled >= 100) {
+                    inventory.Nemesis!.HenchmenKilled = 100;
+                    // Client doesn't seem to request mode=w for infested liches, so weakening it here.
+                    inventory.Nemesis!.InfNodes = [
+                        {
+                            Node: getNemesisManifest(inventory.Nemesis!.manifest).showdownNode,
+                            Influence: 1
+                        }
+                    ];
+                    inventory.Nemesis!.Weakened = true;
+                    const upgrade = getKnifeUpgrade(inventory, dataknifeUpgrades, antivirusMods[passcode]);
+                    consumeModCharge(response, inventory, upgrade, dataknifeUpgrades);
+                }
             }
 
-            if (inventory.Nemesis!.HenchmenKilled >= 100) {
-                inventory.Nemesis!.HenchmenKilled = 100;
+            if (inventory.Nemesis!.HenchmenKilled < 100) {
+                inventory.Nemesis!.InfNodes = getInfNodes(getNemesisManifest(inventory.Nemesis!.manifest), 0);
             }
-            inventory.Nemesis!.InfNodes = getInfNodes(getNemesisManifest(inventory.Nemesis!.manifest), 0);
 
             await inventory.save();
             res.json(response);
@@ -273,6 +286,10 @@ export const nemesisController: RequestHandler = async (req, res) => {
             "Nemesis LoadOutPresets CurrentLoadOutIds DataKnives Upgrades RawUpgrades"
         );
         //const body = getJSONfromString<INemesisWeakenRequest>(String(req.body));
+
+        if (inventory.Nemesis!.Weakened) {
+            logger.warn(`client is weakening an already-weakened nemesis?!`);
+        }
 
         inventory.Nemesis!.InfNodes = [
             {
