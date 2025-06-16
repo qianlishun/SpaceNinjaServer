@@ -1,4 +1,4 @@
-import { fromOid } from "@/src/helpers/inventoryHelpers";
+import { fromMongoDate, fromOid } from "@/src/helpers/inventoryHelpers";
 import { getJSONfromString } from "@/src/helpers/stringHelpers";
 import { getInventory } from "@/src/services/inventoryService";
 import { getAccountIdForRequest } from "@/src/services/loginService";
@@ -11,7 +11,7 @@ export const setSuitInfectionController: RequestHandler = async (req, res) => {
     const payload = getJSONfromString<ISetSuitInfectionRequest>(String(req.body));
     for (const clientSuit of payload.Suits) {
         const dbSuit = inventory.Suits.id(fromOid(clientSuit.ItemId))!;
-        dbSuit.InfestationDate = new Date(parseInt(clientSuit.InfestationDate!.$date.$numberLong));
+        dbSuit.InfestationDate = fromMongoDate(clientSuit.InfestationDate!);
     }
     await inventory.save();
     res.end();
